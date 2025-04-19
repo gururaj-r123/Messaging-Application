@@ -1,5 +1,6 @@
 package com.project.messaging.chat_service.model;
 
+import com.project.messaging.chat_service.manager.MessageStatus;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -19,9 +20,7 @@ public class Message {
     private MessageStatus status;
 
     // Enum for message status
-    public enum MessageStatus {
-        SENT, DELIVERED, READ
-    }
+
 
     // Constructors
     public Message() {

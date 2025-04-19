@@ -1,6 +1,7 @@
 package com.project.messaging.chat_service.repository;
 
 
+import com.project.messaging.chat_service.manager.MessageStatus;
 import com.project.messaging.chat_service.model.Message;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
@@ -22,7 +23,7 @@ public interface MessageRepository extends MongoRepository<Message, String> {
     List<Message> findByReceiverId(String receiverId);
 
     // Get messages by status
-    List<Message> findByStatus(Message.MessageStatus status);
+    List<Message> findByStatus(MessageStatus status);
 
     // Get messages by senderId and receiverId
     List<Message> findBySenderIdAndReceiverId(String senderId, String receiverId);
@@ -30,7 +31,7 @@ public interface MessageRepository extends MongoRepository<Message, String> {
     // Update message status by messageId
     @Query("{ 'messageId' : ?0 }")
     @Update("{ '$set' : { 'status' : ?1 } }")
-    void updateStatusByMessageId(Long messageId, Message.MessageStatus status);
+    void updateStatusByMessageId(Long messageId, MessageStatus status);
 
     // Find message by messageId
     Message findByMessageId(Long messageId);

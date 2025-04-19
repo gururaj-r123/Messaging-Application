@@ -1,9 +1,11 @@
 package com.project.messaging.chat_service.api;
 
 
+import com.project.messaging.chat_service.dto.MessageRequest;
+import com.project.messaging.chat_service.dto.SenderRequest;
 import com.project.messaging.chat_service.manager.MessageService;
 import com.project.messaging.chat_service.model.Message;
-import com.project.messaging.chat_service.model.Message.MessageStatus;
+import com.project.messaging.chat_service.manager.MessageStatus;
 import com.project.messaging.chat_service.repository.MessageRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,15 +28,7 @@ public class MessageController {
     // Save a new message
     @PostMapping
     public ResponseEntity<Message> saveMessage(@RequestBody MessageRequest messageRequest) {
-        Message message = new Message();
-        message.setSenderId(messageRequest.getSenderId());
-        message.setReceiverId(messageRequest.getReceiverId());
-        message.setMessageText(messageRequest.getMessageText());
-        message.setTimestamp(LocalDateTime.now());
-        message.setStatus(Message.MessageStatus.SENT);
-
-        
-        Message savedMessage = messageService.saveMessage(message);
+        Message savedMessage = messageService.saveMessage(messageRequest);
         return ResponseEntity.ok(savedMessage);
     }
 
@@ -72,56 +66,12 @@ public class MessageController {
     @PatchMapping("/{messageId}/status")
     public ResponseEntity<String> updateMessageStatus(
             @PathVariable Long messageId,
-            @RequestBody StatusUpdateRequest statusUpdateRequest) {
+            @RequestBody SenderRequest statusUpdateRequest) {
         Message message = messageRepository.findByMessageId(messageId);
         if (message == null) {
             return ResponseEntity.badRequest().body("Message with ID " + messageId + " not found");
         }
-        messageRepository.updateStatusByMessageId(messageId, statusUpdateRequest.getStatus());
+        messageRepository.updateStatusByMessageId(messageId, message.getStatus());
         return ResponseEntity.ok("Message status updated successfully");
-    }
-
-    // Request DTO for creating messages
-    public static class MessageRequest {
-        private String senderId;
-        private String receiverId;
-        private String messageText;
-
-        public String getSenderId() {
-            return senderId;
-        }
-
-        public void setSenderId(String senderId) {
-            this.senderId = senderId;
-        }
-
-        public String getReceiverId() {
-            return receiverId;
-        }
-
-        public void setReceiverId(String receiverId) {
-            this.receiverId = receiverId;
-        }
-
-        public String getMessageText() {
-            return messageText;
-        }
-
-        public void setMessageText(String messageText) {
-            this.messageText = messageText;
-        }
-    }
-
-    // Request DTO for updating status
-    public static class StatusUpdateRequest {
-        private MessageStatus status;
-
-        public MessageStatus getStatus() {
-            return status;
-        }
-
-        public void setStatus(MessageStatus status) {
-            this.status = status;
-        }
     }
 }
