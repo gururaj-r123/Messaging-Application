@@ -1,0 +1,35 @@
+server:
+  port: 8081  # Customize this port for your service
+
+spring:
+  application:
+    name: ChatService  # This name will show up in Eureka
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/MessagingApp
+  cloud:
+    stream:
+      default-binder: kafka
+      kafka:
+        binder:
+          brokers: localhost:9092
+      bindings:
+        input-in-0:
+          destination: status-topic
+          content-type: application/json
+          group: chat-group
+
+        output:
+          destination: test-topic
+          content-type: application/json
+
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/  # URL of your Eureka server
+    register-with-eureka: true
+    fetch-registry: true
+
+  

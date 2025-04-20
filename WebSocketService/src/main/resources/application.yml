@@ -1,0 +1,36 @@
+server:
+  port: 8082
+logging:
+  level:
+    # WebSocket basic logging
+    org.springframework.web.socket: DEBUG
+    org.springframework.messaging: DEBUG
+
+    # STOMP protocol logging
+    org.springframework.messaging.simp.stomp: DEBUG
+    org.springframework.messaging.simp.broker: DEBUG
+
+    # Message handling
+    org.springframework.messaging.handler: DEBUG
+
+    # Session events
+    org.springframework.web.socket.handler: DEBUG
+
+
+spring:
+  application:
+    name: WebSocketService
+  cloud:
+    stream:
+      default-binder: kafka
+      kafka:
+        binder:
+          brokers: localhost:9092
+      bindings:
+        input-in-0:
+          destination: test-topic
+          content-type: application/json
+          group: chat-group
+        output:
+          destination: status-topic
+          content-type: application/json
